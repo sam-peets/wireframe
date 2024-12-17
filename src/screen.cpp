@@ -2,6 +2,7 @@
 #include "model.hpp"
 #include "renderer.hpp"
 #include <glm/ext.hpp>
+#include <iostream>
 #include <vector>
 
 Screen::Screen(const char *title, const size_t width, const size_t height,
@@ -16,6 +17,9 @@ Screen::Screen(const char *title, const size_t width, const size_t height,
     exit(2);
   }
   this->renderer = new Renderer(model);
+  this->last_frame_time = 0;
+  this->cur_frame_time = 0;
+  this->last_frame_time_fps = 0;
 }
 
 Screen::~Screen() {
@@ -28,7 +32,11 @@ void Screen::show() {
     this->cur_frame_time = SDL_GetTicks();
     size_t d = this->cur_frame_time - last_frame_time;
     if (d < 1000. / 60) {
-      // continue;
+      continue;
+    }
+    if (this->cur_frame_time - this->last_frame_time_fps > 1000) {
+      std::cout << "fps: " << 1. / (d / 1000.) << std::endl;
+      this->last_frame_time_fps = this->cur_frame_time;
     }
 
     this->update();

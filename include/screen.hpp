@@ -6,7 +6,7 @@ struct Screen {
 private:
   SDL_Window *window;
   bool quit = false;
-  size_t cur_frame_time, last_frame_time;
+  size_t cur_frame_time, last_frame_time, last_frame_time_fps;
   Renderer *renderer;
 
 public:
