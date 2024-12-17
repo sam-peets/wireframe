@@ -15,10 +15,12 @@ add_executable(Pipeline
   src/triangle.cpp
   src/screen.cpp
   src/renderer.cpp
+  src/model.cpp
 
   include/triangle.hpp
   include/screen.hpp
   include/renderer.hpp
+  include/model.hpp
   )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -DGLM_FORCE_SWIZZLE")

@@ -10,7 +10,8 @@ private:
   Renderer *renderer;
 
 public:
-  Screen(const char *title, const size_t width, const size_t height);
+  Screen(const char *title, const size_t width, const size_t height,
+         Model *model);
   ~Screen();
   void show();
   void update();

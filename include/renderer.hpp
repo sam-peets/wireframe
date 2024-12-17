@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model.hpp"
 #include "triangle.hpp"
 #include <vector>
 
@@ -12,5 +13,5 @@ private:
 
 public:
   void render(uint32_t *pixels, size_t w, size_t h);
-  Renderer(std::vector<Triangle> triangles);
+  Renderer(Model *model);
 };

@@ -1,9 +1,11 @@
 #include "screen.hpp"
+#include "model.hpp"
 #include "renderer.hpp"
 #include <glm/ext/vector_float4.hpp>
 #include <vector>
 
-Screen::Screen(const char *title, const size_t width, const size_t height) {
+Screen::Screen(const char *title, const size_t width, const size_t height,
+               Model *model) {
   this->window =
       SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                        width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -16,7 +18,7 @@ Screen::Screen(const char *title, const size_t width, const size_t height) {
   std::vector<Triangle> t;
   t.push_back(Triangle(glm::vec4(0., 0., 0., 1.), glm::vec4(0., 1., 0., 1.),
                        glm::vec4(1., 0., 0., 1.)));
-  this->renderer = new Renderer(t);
+  this->renderer = new Renderer(model);
 }
 
 Screen::~Screen() {

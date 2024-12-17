@@ -1,8 +1,10 @@
+#include "model.hpp"
 #include "screen.hpp"
 #include <SDL_events.h>
 #include <SDL_pixels.h>
 #include <SDL_render.h>
 #include <SDL_video.h>
+#include <iostream>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -17,7 +19,14 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  Screen s("pipeline", 200, 200);
+  if (argc != 2) {
+    std::cout << "usage: Pipeline <in.obj>" << std::endl;
+    exit(5);
+  }
+
+  Model m = Model::from_obj(std::string(argv[1]));
+
+  Screen s("pipeline", 200, 200, &m);
   s.show();
 
   SDL_Quit();
