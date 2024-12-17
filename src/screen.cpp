@@ -1,7 +1,7 @@
 #include "screen.hpp"
 #include "model.hpp"
 #include "renderer.hpp"
-#include <glm/ext/vector_float4.hpp>
+#include <glm/ext.hpp>
 #include <vector>
 
 Screen::Screen(const char *title, const size_t width, const size_t height,
@@ -15,9 +15,6 @@ Screen::Screen(const char *title, const size_t width, const size_t height,
            SDL_GetError());
     exit(2);
   }
-  std::vector<Triangle> t;
-  t.push_back(Triangle(glm::vec4(0., 0., 0., 1.), glm::vec4(0., 1., 0., 1.),
-                       glm::vec4(1., 0., 0., 1.)));
   this->renderer = new Renderer(model);
 }
 
@@ -31,7 +28,7 @@ void Screen::show() {
     this->cur_frame_time = SDL_GetTicks();
     size_t d = this->cur_frame_time - last_frame_time;
     if (d < 1000. / 60) {
-      continue;
+      // continue;
     }
 
     this->update();
@@ -43,6 +40,9 @@ void Screen::show() {
 }
 
 void Screen::update() {
+  this->renderer->view = glm::rotate(
+      glm::translate(glm::vec3(0., 0., -10.)),
+      (float)glm::radians(this->cur_frame_time / 100.), glm::vec3(0., 1., 0.));
   SDL_Event e;
   if (SDL_PollEvent(&e)) {
     switch (e.type) {

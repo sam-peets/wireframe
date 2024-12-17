@@ -7,14 +7,14 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <iostream>
 
-Renderer::Renderer(Model *model) {
-  this->model = model->transform;
+Renderer::Renderer(Model *model) : model(model) {
   this->triangles = model->triangles;
+  this->view = glm::mat4(1.);
 }
 
 void set_pixel(uint32_t *pixels, size_t w, size_t h, size_t x, size_t y,
                uint32_t c) {
-  if (y > h || x > w) {
+  if (y >= h || x >= w) {
     return;
   }
   pixels[y * w + x] = 0xffffffff;
@@ -22,26 +22,27 @@ void set_pixel(uint32_t *pixels, size_t w, size_t h, size_t x, size_t y,
 
 void draw_line(uint32_t *pixels, size_t w, size_t h, int x0, int y0, int x1,
                int y1) {
-  float dx = x1 - x0;
-  float dy = y1 - y0;
-  float step;
+  int dx = abs(x1 - x0);
+  int dy = abs(y1 - y0);
+  int sx = (x0 < x1) ? 1 : -1;
+  int sy = (y0 < y1) ? 1 : -1;
+  int err = dx - dy;
 
-  if (std::abs(dx) > std::abs(dy)) {
-    step = std::abs(dx);
-  } else {
-    step = std::abs(dy);
-  }
+  while (true) {
+    set_pixel(pixels, w, h, x0, y0, 0xffffffff);
 
-  dx = dx / step;
-  dy = dy / step;
-  float x = x0;
-  float y = y0;
-  int i = 0;
+    if (x0 == x1 && y0 == y1)
+      break;
 
-  for (int i = 0; i < step; i++) {
-    set_pixel(pixels, w, h, x, y, 0xffffffff);
-    x += dx;
-    y += dy;
+    int e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x0 += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y0 += sy;
+    }
   }
 }
 
@@ -69,22 +70,22 @@ void Renderer::render(uint32_t *pixels, size_t w, size_t h) {
   this->projection = glm::perspective(glm::pi<float>() / 4.0f,
                                       (float)w / (float)h, -0.1f, -1000.0f);
   //   this->view = glm::translate(glm::mat4(1.), glm::vec3(0., 0., -10.));
-  this->view = glm::translate(glm::vec3(0., 0., -10.));
   //   std::cout << glm::to_string(this->view) << std::endl;
 
   for (auto &tri : this->triangles) {
     // std::cout << &tri << std::endl;
     // model -> world
-    auto t = tri.transformed(this->model);
+    // auto t = tri.transformed(model->transform);
     // std::cout << t << std::endl;
 
     // world -> view
-    t = t.transformed(this->view);
+    // t = t.transformed(this->view);
     // std::cout << t << std::endl;
 
     // view -> clip
-    t = t.transformed(this->projection);
+    // t = t.transformed(this->projection);
     // std::cout << t << std::endl;
+    auto t = tri.transformed(this->projection * this->view * model->transform);
 
     // perspective division
     auto v0 = t.v0 / -t.v0.w;

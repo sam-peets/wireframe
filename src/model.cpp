@@ -12,10 +12,10 @@ Model Model::from_obj(std::string path) {
   // null entry
   vertices.push_back(glm::vec4(0., 0., 0., 0.));
   std::vector<Triangle> triangles;
-  char opcode;
+  std::string opcode;
   float x, y, z;
   while (infile >> opcode >> x >> y >> z) {
-    switch (opcode) {
+    switch (opcode[0]) {
     case 'v':
       vertices.push_back(glm::vec4(x, y, z, 1.));
       break;
@@ -26,5 +26,6 @@ Model Model::from_obj(std::string path) {
     }
   }
   std::cout << "read " << triangles.size() << " triangles" << std::endl;
-  return Model(triangles, glm::mat4(1.));
+  // return Model(triangles, glm::scale(glm::vec3(0.02, 0.02, 0.02)));
+  return Model(triangles, glm::scale(glm::vec3(0.05)));
 }
