@@ -3,14 +3,10 @@
 #include <SDL_pixels.h>
 #include <SDL_render.h>
 #include <SDL_video.h>
-#include <cstdint>
 #include <stdbool.h>
 #include <stdio.h>
 
 #include <SDL.h>
-#include <iostream>
-
-void render(SDL_Surface *surface) {}
 
 int main(int argc, char *argv[]) {
   // Initialize SDL
