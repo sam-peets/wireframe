@@ -27,5 +27,5 @@ Model Model::from_obj(std::string path) {
   }
   std::cout << "read " << triangles.size() << " triangles" << std::endl;
   // return Model(triangles, glm::scale(glm::vec3(0.02, 0.02, 0.02)));
-  return Model(triangles, glm::scale(glm::vec3(0.05)));
+  return Model(triangles, glm::scale(glm::vec3(0.1)));
 }

@@ -12,12 +12,13 @@ Renderer::Renderer(Model *model) : model(model) {
   this->view = glm::mat4(1.);
 }
 
-void set_pixel(uint32_t *pixels, size_t w, size_t h, size_t x, size_t y,
+bool set_pixel(uint32_t *pixels, size_t w, size_t h, size_t x, size_t y,
                uint32_t c) {
   if (y >= h || x >= w) {
-    return;
+    return false;
   }
   pixels[y * w + x] = 0xffffffff;
+  return true;
 }
 
 void draw_line(uint32_t *pixels, size_t w, size_t h, int x0, int y0, int x1,
@@ -28,8 +29,8 @@ void draw_line(uint32_t *pixels, size_t w, size_t h, int x0, int y0, int x1,
   int sy = (y0 < y1) ? 1 : -1;
   int err = dx - dy;
 
-  while (true) {
-    set_pixel(pixels, w, h, x0, y0, 0xffffffff);
+  while (set_pixel(pixels, w, h, x0, y0, 0xffffffff)) {
+    // stop trying to draw a line if it goes offscreen
 
     if (x0 == x1 && y0 == y1)
       break;
@@ -48,6 +49,12 @@ void draw_line(uint32_t *pixels, size_t w, size_t h, int x0, int y0, int x1,
 
 void draw_triangle_wireframe(uint32_t *pixels, size_t w, size_t h,
                              Triangle *t) {
+
+  if (t->v0.z > 1 || t->v1.z > 1 || t->v2.z > 1) {
+    // TODO -> this isn't a good way of clipping
+    // triangles disappear at weird times, do it properly
+    return;
+  }
   auto tv0 = t->v0 * 0.5 + glm::vec4(0.5);
   auto tv1 = t->v1 * 0.5 + glm::vec4(0.5);
   auto tv2 = t->v2 * 0.5 + glm::vec4(0.5);
@@ -71,21 +78,9 @@ void Renderer::render(uint32_t *pixels, size_t w, size_t h) {
                                       (float)w / (float)h, -0.1f, -1000.0f);
   //   this->view = glm::translate(glm::mat4(1.), glm::vec3(0., 0., -10.));
   //   std::cout << glm::to_string(this->view) << std::endl;
-
+  auto mvp = this->projection * this->view * model->transform;
   for (auto &tri : this->triangles) {
-    // std::cout << &tri << std::endl;
-    // model -> world
-    // auto t = tri.transformed(model->transform);
-    // std::cout << t << std::endl;
-
-    // world -> view
-    // t = t.transformed(this->view);
-    // std::cout << t << std::endl;
-
-    // view -> clip
-    // t = t.transformed(this->projection);
-    // std::cout << t << std::endl;
-    auto t = tri.transformed(this->projection * this->view * model->transform);
+    auto t = tri.transformed(mvp);
 
     // perspective division
     auto v0 = t.v0 / -t.v0.w;
