@@ -1,3 +1,23 @@
 # Software Rasteriser
 
-This is a pure-software implementation of a real-time 3d graphics pipeline.
+This is a software implementation of a 3d wireframe renderer.
+
+![](img/teapot.webm)
+
+## Usage
+
+To Build:
+
+```
+$ vcpkg install
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
+To Run:
+
+```
+$ ./Wireframe <input.obj>
+```
