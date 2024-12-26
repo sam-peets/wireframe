@@ -2,7 +2,7 @@
 
 This is a software implementation of a 3d wireframe renderer.
 
-![](img/teapot.webm)
+![](img/teapot.mov)
 
 ## Usage
 
