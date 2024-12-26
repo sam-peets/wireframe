@@ -2,7 +2,7 @@
 
 This is a software implementation of a 3d wireframe renderer.
 
-![](img/teapot.mov)
+https://github.com/user-attachments/assets/cc757b2d-ce76-44cb-be24-6d09fab7388e
 
 ## Usage
 
