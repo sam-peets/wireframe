@@ -25,7 +25,8 @@ Model Model::from_obj(std::string path) {
       break;
     }
   }
-  std::cout << "read " << triangles.size() << " triangles" << std::endl;
+  std::cout << "read " << triangles.size() << " triangles, " << vertices.size()
+            << " vertices" << std::endl;
   // return Model(triangles, glm::scale(glm::vec3(0.02, 0.02, 0.02)));
-  return Model(triangles, glm::scale(glm::vec3(0.1)));
+  return Model(triangles, glm::scale(glm::vec3(0.05)));
 }

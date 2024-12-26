@@ -23,9 +23,11 @@ add_executable(Pipeline
   include/model.hpp
   )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wpedantic -g -DGLM_FORCE_SWIZZLE")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og -Wall -Wpedantic -DGLM_FORCE_SWIZZLE")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native -fomit-frame-pointer -flto -Wall -Wpedantic -DGLM_FORCE_SWIZZLE -DGLM_FORCE_AVX")
 
 target_include_directories(Pipeline PRIVATE include)
 target_link_libraries(Pipeline PRIVATE SDL2::SDL2main)
 target_link_libraries(Pipeline PRIVATE SDL2::SDL2)
 target_link_libraries(Pipeline PRIVATE glm::glm)
+target_link_libraries(Pipeline PRIVATE m)

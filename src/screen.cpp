@@ -1,6 +1,7 @@
 #include "screen.hpp"
 #include "model.hpp"
 #include "renderer.hpp"
+#include <SDL_pixels.h>
 #include <glm/ext.hpp>
 #include <iostream>
 #include <vector>
@@ -28,6 +29,9 @@ Screen::~Screen() {
 }
 
 void Screen::show() {
+  std::cout << "pixel format: "
+            << (SDL_GetWindowSurface(this->window)->format)->format
+            << std::endl;
   while (!quit) {
     this->cur_frame_time = SDL_GetTicks();
     size_t d = this->cur_frame_time - last_frame_time;
@@ -63,10 +67,23 @@ void Screen::update() {
 
 void Screen::render() {
   SDL_Surface *surface = SDL_GetWindowSurface(window);
-  SDL_FillRect(surface, NULL, 0x000000);
   uint32_t *pixels = (uint32_t *)surface->pixels;
   size_t w = surface->w;
   size_t h = surface->h;
+  memset(pixels, 0, w * h * sizeof(uint32_t));
 
-  this->renderer->render(pixels, w, h);
+  RenderScreen rs(w, h);
+  this->renderer->render(&rs);
+
+  for (size_t i = 0; i < w * h; i++) {
+    if (rs.color[i].z == 0) {
+      // we didn't write to this pixel, no need to copy
+      continue;
+    }
+    rs.color[i] *= 255.0f;
+    uint8_t r = static_cast<uint8_t>(rs.color[i].r);
+    uint8_t g = static_cast<uint8_t>(rs.color[i].g);
+    uint8_t b = static_cast<uint8_t>(rs.color[i].b);
+    pixels[i] = SDL_MapRGB(surface->format, r, g, b);
+  }
 }
